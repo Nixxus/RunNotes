@@ -1,0 +1,12 @@
+This document will overview how to make notes compatible with RunNotes, commands will be listed in alphabetical order and must be placed on a line by themselves, including '{' and '}'.
+Unfortunatly this does prevent "{}" from being used within the notes themselves.
+
+{end}
+Dictates the end of the splits, anything after this command will be ignored.
+
+{split}
+This command dictates where one splits worth of notes ends and another begins.
+The first line after a split command will be considered the Title of that split.
+
+{start}
+Dictates the first split, anything preceeding the start command will be ignored.
