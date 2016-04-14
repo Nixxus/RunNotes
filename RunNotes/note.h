@@ -10,6 +10,7 @@ class Note
 
 	public:
 		std::string GetNote();
+		std::string GetTitle();
 		int SetInfo(std::string title, std::string note);
 
 };

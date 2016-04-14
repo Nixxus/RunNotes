@@ -1,5 +1,10 @@
 #include "note.h"
 
+std::string Note::GetTitle()
+{
+	return this->title;
+}
+
 std::string Note::GetNote()
 {
 	return this->note;
