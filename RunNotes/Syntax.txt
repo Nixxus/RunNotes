@@ -10,3 +10,4 @@ The first line after a split command will be considered the Title of that split.
 
 {start}
 Dictates the first split, anything preceeding the start command will be ignored.
+The first line after start will be used as the title of the first split

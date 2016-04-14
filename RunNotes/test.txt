@@ -1,0 +1,17 @@
+Test notes for the parser, this section should be ignored
+
+{start}
+split 1
+
+split 1 text
+
+{split}
+split 2
+
+split 2 text
+
+{split}
+split 3
+
+split 3 text
+{end}
