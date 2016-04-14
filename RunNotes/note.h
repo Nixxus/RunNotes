@@ -1,5 +1,5 @@
-//#ifndef NOTE
-//#define NOTE
+#ifndef NOTE
+#define NOTE
 #include <string>
 
 class Note
@@ -14,4 +14,4 @@ class Note
 
 };
 
-//#endif 
+#endif 
