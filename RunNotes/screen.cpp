@@ -12,6 +12,7 @@ using namespace std;
 Screen::Screen()
 {
 	this->state = 0;
+	this->LogicLoop();
 };
 
 void Screen::LogicLoop()
@@ -20,13 +21,13 @@ void Screen::LogicLoop()
 
 	while(1)
 	{
-		switch(this->state == 0)
+		switch(this->state)
 		{
 		case 0:
 			this->OpenNotes();
 			this->state = 1;
 			break;
-		case 2:
+		case 1:
 			displaySwitch =  this->DisplayMenu();
 			switch(displaySwitch)
 			{
@@ -49,18 +50,41 @@ void Screen::LogicLoop()
 void Screen::Clear()
 {
 	this->UpdateWindowSize();
+
+	HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD coord = {0, 0};
+    DWORD count;
+
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(hStdOut, &csbi);
+
+    FillConsoleOutputCharacter(hStdOut, ' ', csbi.dwSize.X * csbi.dwSize.Y, coord, &count);
+
+    SetConsoleCursorPosition(hStdOut, coord);
+
+	/*
 	//Spams newline to clear a screen.
 	for (int i = 0; i<this->rows; i++)
 	{
 		cout << endl;
-	}
+	}*/
 }
 
 void Screen::OpenNotes()
 {
+	//Clear out old notes
+	if (!this->notes.empty())
+	{
+		for (int i = 0; i<this->notes.size(); i++)
+		{
+			delete this->notes[i]; 
+		}
+		this->notes.clear();
+	}
+
 	string read = "";
 	char c = ' ';
-	int state = 0; // 0 = useless text, 1 = command, 2 = title, 3 = note.
+	int readState = 0; // 0 = useless text, 1 = command, 2 = title, 3 = note.
 	bool ignoreLine = true;
 	Note* note = NULL;
 	string noteTitle;
@@ -83,7 +107,7 @@ void Screen::OpenNotes()
 		c = notesFile.get();
 		if (c == '{')
 		{
-			state = 1;
+			readState = 1;
 			noteText = read;
 			read = ""; // reset the read string
 		}
@@ -100,16 +124,16 @@ void Screen::OpenNotes()
 				note->SetInfo(noteTitle, noteText);
 				notes.push_back(note);
 				note = new Note;
-				state = 2;
+				readState = 2;
 			}
 			if (read == "start")
 			{
 				note = new Note;
-				state = 2;
+				readState = 2;
 			}
 			read = ""; // reset the read string
 		}
-		else if (state == 2 && c == '\n') // set title and reset read.
+		else if (readState == 2 && c == '\n') // set title and reset read.
 		{
 			if (ignoreLine)
 			{
@@ -120,7 +144,7 @@ void Screen::OpenNotes()
 				noteTitle = read;
 				read = "";
 				ignoreLine = true;
-				state = 3;
+				readState = 3;
 			}
 		}
 		else
@@ -185,4 +209,13 @@ void Screen::UpdateWindowSize()
     this->rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
 
     return;
+}
+
+void Screen::DisplayNote(int split)
+{
+	this->Clear();
+	cout << this->notes[split]->GetTitle() << endl << endl;
+	cout << this->notes[split]->GetNote();
+	getchar();
+	return;
 }
